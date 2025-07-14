@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/login.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter_application_1/Selector.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(login());
 }
 
 class MyApp extends StatelessWidget {
@@ -66,8 +67,9 @@ class _SplashWithLottieState extends State<SplashWithLottie> {
                 animatedTexts: [
                   TyperAnimatedText(
                     'به فروشگاه خوش آمدید',
-                    speed: Duration(milliseconds: 150),
-                    textStyle: GoogleFonts.vazirmatn(
+                    speed: Duration(milliseconds: 140),
+                    textStyle: TextStyle(
+                      fontFamily: 'iransans',
                       fontWeight: FontWeight.w700,
                     ),
                   ),

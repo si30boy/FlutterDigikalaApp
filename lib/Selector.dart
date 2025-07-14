@@ -22,7 +22,14 @@ class _SelectorState extends State<Selector> {
           child: Column(
             children: [
               SizedBox(height: screenHeight * 0.2),
-              Text('خوشas آمدید'),
+              Text(
+                'خوش آمدید',
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 26,
+                  fontFamily: 'iransans',
+                ),
+              ),
 
               SizedBox(height: screenHeight * 0.5),
               ElevatedButtonSelector(
@@ -67,11 +74,15 @@ class ElevatedButtonSelector extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.circular(12),
         ),
-        padding: EdgeInsets.symmetric(vertical: 12),
+        padding: EdgeInsets.symmetric(vertical: 8),
       ),
       child: Text(
         textInElevation,
-        style: GoogleFonts.exo2(fontWeight: FontWeight.w600, fontSize: 22),
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 22,
+          fontFamily: 'iransans',
+        ),
       ),
     );
   }
