@@ -28,7 +28,7 @@ class _SelectorState extends State<Selector> {
                 'خوش آمدید',
                 style: TextStyle(
                   fontWeight: FontWeight.w900,
-                  fontSize: 28,
+                  fontSize: 26,
                   fontFamily: 'iransans',
                 ),
               ),
