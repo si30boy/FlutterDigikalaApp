@@ -1,32 +1,33 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_application_1/Selector.dart';
 
-class login extends StatefulWidget {
-  const login({super.key});
+class Signup extends StatefulWidget {
+  const Signup({super.key});
 
   @override
-  State<login> createState() => _loginState();
+  State<Signup> createState() => _SignupState();
 }
 
-class _loginState extends State<login> {
+class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('ورود', style: TextStyle(fontFamily: 'iransans')),
-          centerTitle: true,
-          leading: Icon(CupertinoIcons.back, color: Colors.black),
-          backgroundColor: Colors.white,
-          elevation: 0,
+    return Scaffold(
+      // ✅ فقط از Scaffold استفاده کن
+      appBar: AppBar(
+        title: Text('ثبت نام', style: TextStyle(fontFamily: 'iransans')),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(CupertinoIcons.back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
         ),
-        body: LoginUi(screenHeight: screenHeight, screenWidth: screenWidth),
+        backgroundColor: Colors.white,
+        elevation: 0,
       ),
+      body: LoginUi(screenHeight: screenHeight, screenWidth: screenWidth),
     );
   }
 }
@@ -44,7 +45,7 @@ class LoginUi extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: 30),
+        SizedBox(height: 28),
         Center(
           child: Text(
             'فروشگاه آنلاین من',
@@ -57,9 +58,9 @@ class LoginUi extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 30),
+        SizedBox(height: 28),
         Container(
-          height: screenHeight * 0.4,
+          height: screenHeight * 0.6,
           width: double.infinity,
           margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
           child: Card(
@@ -154,31 +155,64 @@ class LoginUi extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(height: 16),
+                  Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(0, 0, 30, 0),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        ' تکرار رمز عبور',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontFamily: 'iransans',
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(40, 0, 40, 0),
+                    child: TextField(
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontFamily: 'iransans',
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'تکرار کلمه عبور',
+                        hintStyle: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black54,
+                          fontSize: 16,
+                          fontFamily: 'iransans',
+                        ),
+                        suffixIcon: Icon(
+                          CupertinoIcons.lock,
+                          color: Colors.black26,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ),
-        SizedBox(height: 48),
+        SizedBox(height: 36),
 
         ElevatedButtonSelector(
           screenHeight: screenHeight,
           screenWidth: screenWidth,
-          textInElevation: 'ورود',
+          textInElevation: 'ثبت نام',
           onPressed: () {
-            
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('ثبت‌نام انجام شد ✅')));
           },
-        ),
-
-        SizedBox(height: 16),
-        Text(
-          'حساب کاربری ندارم',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            color: Colors.blueAccent,
-            fontSize: 14,
-            fontFamily: 'iransans',
-          ),
         ),
       ],
     );

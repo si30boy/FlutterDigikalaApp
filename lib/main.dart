@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/login.dart';
+import 'package:flutter_application_1/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter_application_1/Selector.dart';
 
 void main() {
-  runApp(login());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

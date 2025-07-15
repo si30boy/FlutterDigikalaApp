@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/login.dart';
+import 'package:flutter_application_1/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Selector extends StatefulWidget {
@@ -36,12 +38,22 @@ class _SelectorState extends State<Selector> {
                 screenHeight: screenHeight,
                 screenWidth: screenWidth,
                 textInElevation: 'ورود',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const login()),
+                  );
+                },
               ),
               SizedBox(height: 16),
               ElevatedButtonSelector(
                 screenHeight: screenHeight,
                 screenWidth: screenWidth,
                 textInElevation: 'ثبت نام',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const Signup()),
+                  );
+                },
               ),
             ],
           ),
@@ -55,25 +67,25 @@ class ElevatedButtonSelector extends StatelessWidget {
   final double screenHeight;
   final double screenWidth;
   final String textInElevation;
+  final VoidCallback onPressed;
 
   const ElevatedButtonSelector({
     super.key,
     required this.screenHeight,
     required this.screenWidth,
     required this.textInElevation,
+    required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
         backgroundColor: Colors.black,
         fixedSize: Size(screenWidth * 0.8, 50),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: EdgeInsets.symmetric(vertical: 8),
       ),
       child: Text(
