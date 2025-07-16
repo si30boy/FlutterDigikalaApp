@@ -21,7 +21,10 @@ class _loginState extends State<login> {
         appBar: AppBar(
           title: Text('ورود', style: TextStyle(fontFamily: 'iransans')),
           centerTitle: true,
-          leading: Icon(CupertinoIcons.back, color: Colors.black),
+          leading: IconButton(
+            icon: Icon(CupertinoIcons.back, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
+          ),
           backgroundColor: Colors.white,
           elevation: 0,
         ),
@@ -165,9 +168,7 @@ class LoginUi extends StatelessWidget {
           screenHeight: screenHeight,
           screenWidth: screenWidth,
           textInElevation: 'ورود',
-          onPressed: () {
-            
-          },
+          onPressed: () {},
         ),
 
         SizedBox(height: 16),
