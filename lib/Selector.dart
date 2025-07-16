@@ -34,55 +34,27 @@ class _SelectorState extends State<Selector> {
               ),
 
               SizedBox(height: screenHeight * 0.5),
-              ElevatedButton(
+
+              ElevatedButtonSelector(
+                screenHeight: screenHeight,
+                screenWidth: screenWidth,
+                textInElevation: 'ورود',
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => const login()),
                   );
                 },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.black,
-                  fixedSize: Size(screenWidth * 0.8, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                ),
-                child: Text(
-                  'ورود',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 22,
-                    fontFamily: 'iransans',
-                  ),
-                ),
               ),
-
               SizedBox(height: 16),
-              ElevatedButton(
+              ElevatedButtonSelector(
+                screenHeight: screenHeight,
+                screenWidth: screenWidth,
+                textInElevation: 'ثبت نام',
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => const Signup()),
                   );
                 },
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.black,
-                  fixedSize: Size(screenWidth * 0.8, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 8),
-                ),
-                child: Text(
-                  'ثبت نام',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 22,
-                    fontFamily: 'iransans',
-                  ),
-                ),
               ),
             ],
           ),
