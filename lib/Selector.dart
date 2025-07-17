@@ -33,14 +33,14 @@ class _SelectorState extends State<Selector> {
                   fontFamily: 'iransans',
                 ),
               ),
-              SizedBox(height: screenHeight * 0.2),
+              SizedBox(height: screenHeight * 0.05),
               Lottie.asset(
-                'assets/animations/onlineshoplottie.json',
+                'assets/animations/onlineshoplottie2.json',
                 width: 300,
                 height: 300,
               ),
 
-              SizedBox(height: screenHeight * 0.5),
+              SizedBox(height: screenHeight * 0.1),
 
               ElevatedButtonSelector(
                 screenHeight: screenHeight,

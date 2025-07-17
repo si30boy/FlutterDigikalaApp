@@ -60,7 +60,7 @@ class LoginUi extends StatelessWidget {
         ),
         SizedBox(height: 28),
         Container(
-          height: screenHeight * 0.6,
+          height: screenHeight * 0.45,
           width: double.infinity,
           margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
           child: Card(

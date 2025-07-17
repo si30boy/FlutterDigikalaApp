@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Selector.dart';
+import 'package:flutter_application_1/signup.dart';
 
 class login extends StatefulWidget {
   const login({super.key});
@@ -62,7 +63,7 @@ class LoginUi extends StatelessWidget {
         ),
         SizedBox(height: 30),
         Container(
-          height: screenHeight * 0.4,
+          height: screenHeight * 0.35,
           width: double.infinity,
           margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
           child: Card(
@@ -172,13 +173,21 @@ class LoginUi extends StatelessWidget {
         ),
 
         SizedBox(height: 16),
-        Text(
-          'حساب کاربری ندارم',
-          style: TextStyle(
-            fontWeight: FontWeight.w800,
-            color: Colors.blueAccent,
-            fontSize: 14,
-            fontFamily: 'iransans',
+        InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Signup()),
+            );
+          },
+          child: Text(
+            'حساب کاربری ندارم',
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+              color: Colors.blueAccent,
+              fontSize: 14,
+              fontFamily: 'iransans',
+            ),
           ),
         ),
       ],
