@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/login.dart';
 import 'package:flutter_application_1/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 
 class Selector extends StatefulWidget {
   const Selector({super.key});
@@ -31,6 +32,12 @@ class _SelectorState extends State<Selector> {
                   fontSize: 26,
                   fontFamily: 'iransans',
                 ),
+              ),
+              SizedBox(height: screenHeight * 0.2),
+              Lottie.asset(
+                'assets/animations/onlineshoplottie.json',
+                width: 300,
+                height: 300,
               ),
 
               SizedBox(height: screenHeight * 0.5),
