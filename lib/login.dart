@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Selector.dart';
+import 'package:flutter_application_1/home.dart';
 import 'package:flutter_application_1/signup.dart';
 
 class login extends StatefulWidget {
@@ -169,7 +170,12 @@ class LoginUi extends StatelessWidget {
           screenHeight: screenHeight,
           screenWidth: screenWidth,
           textInElevation: 'ورود',
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Home()),
+            );
+          },
         ),
 
         SizedBox(height: 16),
