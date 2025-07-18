@@ -162,6 +162,8 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
+              SizedBox(height: 8,),
+            
             ],
           ),
         );
@@ -200,7 +202,48 @@ Widget generateItems(Product product, BuildContext context) {
               child: Text(
                 product.name,
                 textAlign: TextAlign.right,
-                style: TextStyle(color: Colors.black, fontFamily: 'iransans'),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'iransans',
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            SizedBox(height: 4),
+
+            Divider(
+              height: 1,
+              color: Colors.grey,
+              thickness: 1.4,
+              endIndent: 15,
+              indent: 15,
+            ),
+
+            SizedBox(height: 8),
+            Padding(
+              padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'تومان',
+                    style: TextStyle(
+                      fontFamily: 'iransans',
+                      fontSize: 16,
+                      color: Colors.blueGrey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    product.price,
+                    style: TextStyle(
+                      fontFamily: 'iransans',
+                      fontSize: 16,
+                      color: Colors.blueGrey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
