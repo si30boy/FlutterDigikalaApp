@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Product.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 
 class Home extends StatefulWidget {
@@ -11,6 +12,29 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _selectedIndex = 0; // ✅ اینجا تعریفش کن
+  final List<Product> _items = [
+    Product(
+      '1',
+      'کنسول بازی ',
+      '130001234',
+      'https://s6.uupload.ir/files/consoleimage_irmt.jpg',
+      'قیمت عای و مناسب',
+    ),
+    Product(
+      '2',
+      'کنسول بازی ',
+      '130342324',
+      'https://s6.uupload.ir/files/consoleimage_irmt.jpg',
+      'قیمت عای و مناسب',
+    ),
+    Product(
+      '3',
+      'کنسول بازی ',
+      '135252555',
+      'https://s6.uupload.ir/files/consoleimage_irmt.jpg',
+      'قیمت عای و مناسب',
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +146,22 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
+              Container(
+                height: 310,
+                color: Colors.green,
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: GridView.count(
+                    crossAxisCount: 1,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 15,
+                    scrollDirection: Axis.horizontal,
+                    children: List.generate(_items.length, (int position) {
+                      return generateItems(_items[position], (context));
+                    }),
+                  ),
+                ),
+              ),
             ],
           ),
         );
@@ -134,4 +174,38 @@ class _HomeState extends State<Home> {
       _selectedIndex = index;
     });
   }
+}
+
+Widget generateItems(Product product, BuildContext context) {
+  return Card(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(12)),
+    ),
+    elevation: 10,
+    child: InkWell(
+      onTap: () {},
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 190,
+              height: 170,
+              child: Image.network(product.image, fit: BoxFit.contain),
+            ),
+            SizedBox(height: 4),
+            Container(
+              width: 220,
+              height: 50,
+              child: Text(
+                product.name,
+                textAlign: TextAlign.right,
+                style: TextStyle(color: Colors.black, fontFamily: 'iransans'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
