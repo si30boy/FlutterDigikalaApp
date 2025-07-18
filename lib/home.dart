@@ -104,6 +104,7 @@ class _HomeState extends State<Home> {
     return Builder(
       builder: (context) {
         return SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
@@ -227,7 +228,7 @@ class _HomeState extends State<Home> {
                   ),
                   elevation: 8,
                   child: Image.network(
-                    'https://s6.uupload.ir/files/ban_4_jxpg.jpg',
+                    'https://s6.uupload.ir/files/ban_7_b9gw.jpg',
                     fit: BoxFit.cover,
                   ),
                 ),
