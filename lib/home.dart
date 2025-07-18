@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -17,7 +18,14 @@ class _HomeState extends State<Home> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: Text('فروشگاه من'),
+          title: Text(
+            'فروشگاه من',
+            style: TextStyle(
+              fontFamily: 'iransans',
+              fontWeight: FontWeight.w800,
+              color: Colors.blue,
+            ),
+          ),
           centerTitle: true,
           backgroundColor: Colors.white,
           elevation: 10,
@@ -29,6 +37,7 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
+        body: MainUi(),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
@@ -64,6 +73,36 @@ class _HomeState extends State<Home> {
           onTap: _onItemTap,
         ),
       ),
+    );
+  }
+
+  Widget MainUi() {
+    return Builder(
+      builder: (context) {
+        return SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              ImageSlideshow(
+                width: double.infinity,
+                height: 160,
+                initialPage: 0,
+                indicatorColor: Colors.white,
+                indicatorBackgroundColor: Colors.grey,
+                autoPlayInterval: 6000,
+                isLoop: true,
+                children: [
+                  Image.asset('assets/images/slider2.jpg', fit: BoxFit.fill),
+                  Image.asset('assets/images/slider4.jpg', fit: BoxFit.fill),
+                  Image.asset('assets/images/slider5.jpg', fit: BoxFit.fill),
+                  Image.asset('assets/images/slider6.jpg', fit: BoxFit.fill),
+                  Image.asset('assets/images/slider7.jpg', fit: BoxFit.fill),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
