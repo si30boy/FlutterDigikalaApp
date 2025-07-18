@@ -9,6 +9,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  int _selectedIndex = 0; // ✅ اینجا تعریفش کن
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,7 +21,6 @@ class _HomeState extends State<Home> {
           centerTitle: true,
           backgroundColor: Colors.white,
           elevation: 10,
-
           actions: [
             IconButton(
               onPressed: () {},
@@ -32,8 +33,7 @@ class _HomeState extends State<Home> {
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
           elevation: 20,
-
-          selectedFontSize: 14,
+          selectedFontSize: 15,
           selectedIconTheme: IconThemeData(color: Colors.teal, size: 30),
           selectedItemColor: Colors.teal,
           selectedLabelStyle: TextStyle(
@@ -41,13 +41,11 @@ class _HomeState extends State<Home> {
             fontFamily: 'iransans',
             fontWeight: FontWeight.w600,
           ),
-
           unselectedIconTheme: IconThemeData(size: 30),
           unselectedLabelStyle: TextStyle(
             fontFamily: 'iransans',
             fontWeight: FontWeight.w200,
           ),
-
           items: [
             BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.settings),
@@ -62,8 +60,16 @@ class _HomeState extends State<Home> {
               label: 'سبد خرید',
             ),
           ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTap,
         ),
       ),
     );
+  }
+
+  void _onItemTap(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }
