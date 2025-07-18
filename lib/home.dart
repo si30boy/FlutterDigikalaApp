@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
             style: TextStyle(
               fontFamily: 'iransans',
               fontWeight: FontWeight.w800,
-              color: Colors.blue,
+              color: Colors.teal,
             ),
           ),
           centerTitle: true,
@@ -98,6 +98,29 @@ class _HomeState extends State<Home> {
                   Image.asset('assets/images/slider6.jpg', fit: BoxFit.fill),
                   Image.asset('assets/images/slider7.jpg', fit: BoxFit.fill),
                 ],
+              ),
+              SizedBox(height: 12),
+              InkWell(
+                onTap: () {},
+                child: Container(
+                  height: 60,
+                  margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(CupertinoIcons.back),
+                      Text(
+                        'پر فروشترین محصولات',
+                        style: TextStyle(
+                          fontFamily: 'iransans',
+                          fontWeight: FontWeight.w800,
+                          color: Colors.teal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
