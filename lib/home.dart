@@ -162,8 +162,76 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-              SizedBox(height: 8,),
-            
+              SizedBox(height: 8),
+              Container(
+                height: 120,
+                width: double.infinity,
+                margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  elevation: 8,
+                  child: Image.network(
+                    'https://s6.uupload.ir/files/ban_4_jxpg.jpg',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(height: 8),
+              Container(
+                height: 120,
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      height: 120,
+                      width: MediaQuery.of(context).size.width / 2,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        elevation: 8,
+                        child: Image.network(
+                          'https://s6.uupload.ir/files/ban_5_s0pa.jpg',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 120,
+                      width: MediaQuery.of(context).size.width / 2,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        elevation: 8,
+                        child: Image.network(
+                          'https://s6.uupload.ir/files/ban_6_9iey.jpg',
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 8),
+              Container(
+                height: 120,
+                width: double.infinity,
+                margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  elevation: 8,
+                  child: Image.network(
+                    'https://s6.uupload.ir/files/ban_4_jxpg.jpg',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             ],
           ),
         );
