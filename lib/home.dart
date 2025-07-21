@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Product.dart';
+import 'package:flutter_application_1/productpage.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 
 class Home extends StatefulWidget {
@@ -254,7 +255,9 @@ Widget generateItems(Product product, BuildContext context) {
     ),
     elevation: 10,
     child: InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Productpage(product)));
+      },
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
