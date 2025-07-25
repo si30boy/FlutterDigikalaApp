@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_application_1/login.dart';
 import 'package:flutter_application_1/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,7 +7,14 @@ import 'package:lottie/lottie.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter_application_1/Selector.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Supabase.initialize(
+    url: 'https://sehsmxihuuproztzqojm.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlaHNteGlodXVwcm96dHpxb2ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NTY2MjcsImV4cCI6MjA2OTAzMjYyN30.4M6jo33ilgtn4kyr-oYEsxhoZfU9mpgfjsv8zbgz5eE',
+  );
+
   runApp(MyApp());
 }
 

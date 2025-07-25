@@ -1,268 +1,219 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Signup extends StatefulWidget {
-  const Signup({super.key});
+  const Signup({Key? key}) : super(key: key);
 
   @override
-  State<Signup> createState() => _SignupState();
+  State<Signup> createState() => _SignupPageState();
 }
 
-class _SignupState extends State<Signup> {
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController passwordRepeatController =
+class _SignupPageState extends State<Signup> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
       TextEditingController();
 
-  bool isLoading = false;
+  bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>();
 
-  void register() async {
-    final username = usernameController.text.trim();
-    final password = passwordController.text.trim();
-    final passwordRepeat = passwordRepeatController.text.trim();
-
-    if (username.isEmpty || password.isEmpty || passwordRepeat.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('لطفا همه فیلدها را پر کنید')));
-      return;
-    }
-
-    if (password != passwordRepeat) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('رمز عبور و تکرار آن مطابقت ندارند')),
-      );
-      return;
-    }
+  Future<void> _registerUser() async {
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
 
     try {
-      var url = Uri.parse(
-        'http://192.168.1.10:8000/register/',
-      ); // آدرس سرور خودت
-
-      var response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'username': username,
-          'email': username, // اگر ایمیل داری جایگزین کن
-          'password': password,
-        }),
+      // ثبت‌نام کاربر با ایمیل در Supabase
+      final response = await Supabase.instance.client.auth.signUp(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('ثبت‌نام با موفقیت انجام شد!')));
-        // اینجا میتونی صفحه بعدی رو باز کنی یا فرم رو پاک کنی
-      } else {
-        var data = jsonDecode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('خطا: ${data['detail'] ?? 'مشکل در ثبت نام'}'),
-          ),
-        );
+      if (response.user == null) {
+        throw Exception('ثبت‌نام ناموفق بود.');
       }
+
+      // ذخیره اطلاعات اضافی در جدول users
+      await Supabase.instance.client.from('users').insert({
+        'id': response.user!.id,
+        'username': _usernameController.text.trim(),
+        'email': _emailController.text.trim(),
+      });
+
+      _showSuccessDialog();
+      _clearForm();
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('خطا در اتصال به سرور')));
+      String errorMessage = 'خطای اتصال: $e';
+      if (e is AuthException) {
+        if (e.message.contains('already registered')) {
+          errorMessage = 'این ایمیل قبلاً ثبت شده است.';
+        } else if (e.message.contains('invalid')) {
+          errorMessage = 'ایمیل یا رمز عبور نامعتبر است.';
+        }
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+      );
     } finally {
       setState(() {
-        isLoading = false;
+        _isLoading = false;
       });
     }
   }
 
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('ثبت‌نام موفق'),
+        content: const Text('حساب شما با موفقیت ساخته شد.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('تأیید'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _clearForm() {
+    _usernameController.clear();
+    _emailController.clear();
+    _passwordController.clear();
+    _confirmPasswordController.clear();
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('ثبت نام', style: TextStyle(fontFamily: 'iransans')),
+        title: const Text('Sign Up'),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 28),
-            Center(
-              child: Text(
-                'فروشگاه آنلاین من',
-                style: TextStyle(
-                  fontFamily: 'iransans',
-                  fontWeight: FontWeight.w800,
-                  fontSize: 22,
-                  letterSpacing: 0.5,
-                  color: Colors.blueAccent,
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              const Text(
+                'Create Account',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 30),
+              TextFormField(
+                controller: _usernameController,
+                decoration: const InputDecoration(
+                  labelText: 'Username',
+                  prefixIcon: Icon(Icons.person),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a username';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  prefixIcon: Icon(Icons.email),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an email address';
+                  }
+                  if (!value.contains('@') || !value.contains('.')) {
+                    return 'Please enter a valid email';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  prefixIcon: Icon(Icons.lock),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a password';
+                  }
+                  if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _confirmPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Confirm Password',
+                  prefixIcon: Icon(Icons.lock_outline),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please confirm your password';
+                  }
+                  if (value != _passwordController.text) {
+                    return 'Passwords do not match';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _registerUser,
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text('SIGN UP', style: TextStyle(fontSize: 16)),
                 ),
               ),
-            ),
-            SizedBox(height: 28),
-            Container(
-              height: screenHeight * 0.55,
-              width: double.infinity,
-              margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 20,
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Already have an account?'),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Sign In'),
                   ),
-                  child: Column(
-                    children: [
-                      // نام کاربری
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'نام کاربری',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'iransans',
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      TextField(
-                        controller: usernameController,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontFamily: 'iransans',
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'شماره تماس یا ایمیل',
-                          hintStyle: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black54,
-                            fontSize: 16,
-                            fontFamily: 'iransans',
-                          ),
-                          suffixIcon: Icon(
-                            CupertinoIcons.person,
-                            color: Colors.black26,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-
-                      // رمز عبور
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'رمز عبور',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'iransans',
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      TextField(
-                        controller: passwordController,
-                        textAlign: TextAlign.center,
-                        obscureText: true,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontFamily: 'iransans',
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'کلمه عبور',
-                          hintStyle: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black54,
-                            fontSize: 16,
-                            fontFamily: 'iransans',
-                          ),
-                          suffixIcon: Icon(
-                            CupertinoIcons.lock,
-                            color: Colors.black26,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-
-                      // تکرار رمز عبور
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'تکرار رمز عبور',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontFamily: 'iransans',
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      TextField(
-                        controller: passwordRepeatController,
-                        textAlign: TextAlign.center,
-                        obscureText: true,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontFamily: 'iransans',
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'تکرار کلمه عبور',
-                          hintStyle: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black54,
-                            fontSize: 16,
-                            fontFamily: 'iransans',
-                          ),
-                          suffixIcon: Icon(
-                            CupertinoIcons.lock,
-                            color: Colors.black26,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 24),
-
-                      isLoading
-                          ? CircularProgressIndicator()
-                          : ElevatedButton(
-                              onPressed: register,
-                              child: Text(
-                                'ثبت نام',
-                                style: TextStyle(fontFamily: 'iransans'),
-                              ),
-                            ),
-                    ],
-                  ),
-                ),
+                ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
