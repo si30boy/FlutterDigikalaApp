@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Selector.dart';
 import 'package:flutter_application_1/login.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -68,18 +69,27 @@ class _SignupPageState extends State<Signup> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('ثبت‌نام موفق'),
-        content: const Text('حساب شما با موفقیت ساخته شد.'),
+        title: const Text(
+          'ثبت‌نام موفق',
+          style: TextStyle(fontFamily: 'iransans'),
+        ),
+        content: const Text(
+          'حساب شما با موفقیت ساخته شد.',
+          style: TextStyle(fontFamily: 'iransans'),
+        ),
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context); // بستن دیالوگ
+              Navigator.pop(context);
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const login()),
-              ); // رفتن به صفحه Login
+              );
             },
-            child: const Text('تأیید'),
+            child: const Text(
+              'تأیید',
+              style: TextStyle(fontFamily: 'iransans'),
+            ),
           ),
         ],
       ),
@@ -104,126 +114,294 @@ class _SignupPageState extends State<Signup> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign Up'),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'ثبت‌نام',
+            style: TextStyle(fontFamily: 'iransans'),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.pop(context),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
         ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              const Text(
-                'Create Account',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 30),
-              TextFormField(
-                controller: _usernameController,
-                decoration: const InputDecoration(
-                  labelText: 'Username',
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a username';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                  prefixIcon: Icon(Icons.email),
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an email address';
-                  }
-                  if (!value.contains('@') || !value.contains('.')) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a password';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _confirmPasswordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Confirm Password',
-                  prefixIcon: Icon(Icons.lock_outline),
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please confirm your password';
-                  }
-                  if (value != _passwordController.text) {
-                    return 'Passwords do not match';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _registerUser,
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('SIGN UP', style: TextStyle(fontSize: 16)),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Already have an account?'),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => login()),
-                      );
-                    },
-                    child: const Text('Sign In'),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                // const SizedBox(height: 20),
+                // const Center(
+                //   child: Text(
+                //     'فروشگاه آنلاین من',
+                //     style: TextStyle(
+                //       fontFamily: 'iransans',
+                //       fontWeight: FontWeight.w800,
+                //       fontSize: 22,
+                //       letterSpacing: 0.5,
+                //       color: Colors.blueAccent,
+                //     ),
+                //   ),
+                // ),
+                const SizedBox(height: 28),
+                Container(
+                  height: screenHeight * 0.64,
+                  width: double.infinity,
+                  margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: const Text(
+                              'نام کاربری',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'iransans',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _usernameController,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontFamily: 'iransans',
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'نام کاربری',
+                              labelStyle: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black54,
+                                fontSize: 16,
+                                fontFamily: 'iransans',
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              suffixIcon: const Icon(
+                                Icons.person,
+                                color: Colors.black26,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'لطفاً نام کاربری وارد کنید';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: const Text(
+                              'ایمیل',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'iransans',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _emailController,
+                            keyboardType: TextInputType.emailAddress,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontFamily: 'iransans',
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'ایمیل',
+                              labelStyle: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black54,
+                                fontSize: 16,
+                                fontFamily: 'iransans',
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              suffixIcon: const Icon(
+                                Icons.email,
+                                color: Colors.black26,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'لطفاً ایمیل وارد کنید';
+                              }
+                              if (!value.contains('@') ||
+                                  !value.contains('.')) {
+                                return 'لطفاً ایمیل معتبر وارد کنید';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: const Text(
+                              'رمز عبور',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'iransans',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _passwordController,
+                            obscureText: true,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontFamily: 'iransans',
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'رمز عبور',
+                              labelStyle: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black54,
+                                fontSize: 16,
+                                fontFamily: 'iransans',
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              suffixIcon: const Icon(
+                                Icons.lock,
+                                color: Colors.black26,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'لطفاً رمز عبور وارد کنید';
+                              }
+                              if (value.length < 6) {
+                                return 'رمز عبور باید حداقل 6 کاراکتر باشد';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 16),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: const Text(
+                              'تأیید رمز عبور',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'iransans',
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _confirmPasswordController,
+                            obscureText: true,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontFamily: 'iransans',
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'تأیید رمز عبور',
+                              labelStyle: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black54,
+                                fontSize: 16,
+                                fontFamily: 'iransans',
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              suffixIcon: const Icon(
+                                Icons.lock_outline,
+                                color: Colors.black26,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'لطفاً رمز عبور را تأیید کنید';
+                              }
+                              if (value != _passwordController.text) {
+                                return 'رمزهای عبور مطابقت ندارند';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 30),
+                ElevatedButtonSelector(
+                  screenHeight: screenHeight,
+                  screenWidth: screenWidth,
+                  textInElevation: 'ثبت‌نام',
+                  onPressed: _isLoading ? () {} : _registerUser,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => login()),
+                        );
+                      },
+                      child: const Text(
+                        'ورود',
+                        style: TextStyle(
+                          fontFamily: 'iransans',
+                          color: Colors.blueAccent,
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      'حساب کاربری دارم؟',
+                      style: TextStyle(fontFamily: 'iransans'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
