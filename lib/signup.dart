@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/login.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Signup extends StatefulWidget {
@@ -38,7 +39,6 @@ class _SignupPageState extends State<Signup> {
 
       // ذخیره اطلاعات اضافی در جدول users
       await Supabase.instance.client.from('users').insert({
-        'id': response.user!.id,
         'username': _usernameController.text.trim(),
         'email': _emailController.text.trim(),
       });
@@ -72,7 +72,13 @@ class _SignupPageState extends State<Signup> {
         content: const Text('حساب شما با موفقیت ساخته شد.'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              Navigator.pop(context); // بستن دیالوگ
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const login()),
+              ); // رفتن به صفحه Login
+            },
             child: const Text('تأیید'),
           ),
         ],
@@ -207,7 +213,12 @@ class _SignupPageState extends State<Signup> {
                 children: [
                   const Text('Already have an account?'),
                   TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => login()),
+                      );
+                    },
                     child: const Text('Sign In'),
                   ),
                 ],
