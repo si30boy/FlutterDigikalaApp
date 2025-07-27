@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_application_1/home.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_application_1/Product.dart';
+import 'package:flutter_application_1/Selector.dart';
 
 class AdminUpdateItem extends StatefulWidget {
-  final int productId;
-  final String name;
-  final String description;
-  final double price;
-  final String imageUrl;
+  final Product product;
 
-  const AdminUpdateItem({
-    Key? key,
-    required this.productId,
-    required this.name,
-    required this.description,
-    required this.price,
-    required this.imageUrl,
-  }) : super(key: key);
+  const AdminUpdateItem({Key? key, required this.product}) : super(key: key);
 
   @override
   State<AdminUpdateItem> createState() => _AdminUpdateItemState();
@@ -34,45 +25,39 @@ class _AdminUpdateItemState extends State<AdminUpdateItem> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.name);
-    _descriptionController = TextEditingController(text: widget.description);
-    _priceController = TextEditingController(text: widget.price.toString());
-    _imageUrlController = TextEditingController(text: widget.imageUrl);
+    _nameController = TextEditingController(text: widget.product.name);
+    _descriptionController = TextEditingController(text: widget.product.description);
+    _priceController = TextEditingController(text: widget.product.price);
+    _imageUrlController = TextEditingController(text: widget.product.image);
   }
 
   Future<void> _updateProduct() async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
-      await Supabase.instance.client
-          .from('products')
-          .update({
-            'name': _nameController.text.trim(),
-            'description': _descriptionController.text.trim(),
-            'price': double.tryParse(_priceController.text.trim()) ?? 0,
-            'image_url': _imageUrlController.text.trim(),
-          })
-          .eq('id', widget.productId);
+      final name = _nameController.text.trim();
+      final description = _descriptionController.text.trim();
+      final price = double.tryParse(_priceController.text.trim()) ?? 0;
+      final imageUrl = _imageUrlController.text.trim();
 
+      await Supabase.instance.client.from('products').update({
+        'name': name,
+        'description': description,
+        'price': price,
+        'image_url': imageUrl,
+      }).eq('id', widget.product.id);
+
+      if (!mounted) return;
       _showSuccessDialog();
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('خطا در به‌روزرسانی: $e'),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text('خطای اتصال: $e'), backgroundColor: Colors.red),
       );
     } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -80,8 +65,8 @@ class _AdminUpdateItemState extends State<AdminUpdateItem> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('به‌روزرسانی موفق'),
-        content: const Text('محصول با موفقیت ویرایش شد.'),
+        title: const Text('بروزرسانی موفق', style: TextStyle(fontFamily: 'iransans')),
+        content: const Text('محصول با موفقیت ویرایش شد.', style: TextStyle(fontFamily: 'iransans')),
         actions: [
           TextButton(
             onPressed: () {
@@ -91,7 +76,7 @@ class _AdminUpdateItemState extends State<AdminUpdateItem> {
                 MaterialPageRoute(builder: (context) => const Home()),
               );
             },
-            child: const Text('تأیید'),
+            child: const Text('تأیید', style: TextStyle(fontFamily: 'iransans')),
           ),
         ],
       ),
@@ -109,54 +94,121 @@ class _AdminUpdateItemState extends State<AdminUpdateItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('ویرایش محصول'), centerTitle: true),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'نام محصول'),
-                validator: (value) =>
-                    value!.isEmpty ? 'نام را وارد کنید' : null,
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Builder(
+        builder: (context) => Directionality(
+          textDirection: TextDirection.rtl,
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text('ویرایش محصول', style: TextStyle(fontFamily: 'iransans')),
+              centerTitle: true,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.pop(context),
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'توضیحات محصول'),
-                validator: (value) =>
-                    value!.isEmpty ? 'توضیحات را وارد کنید' : null,
+              backgroundColor: Colors.white,
+              elevation: 0,
+            ),
+            body: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 28),
+                    Container(
+                      height: screenHeight * 0.64,
+                      width: double.infinity,
+                      margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                      child: Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              buildLabel('نام محصول'),
+                              buildTextField(_nameController, 'نام محصول', 'مثلاً: گوشی موبایل', Icons.inventory),
+                              buildLabel('توضیحات محصول'),
+                              buildTextField(_descriptionController, 'توضیحات محصول', 'مثلاً: توضیحات کوتاه', Icons.description),
+                              buildLabel('قیمت محصول'),
+                              buildTextField(_priceController, 'قیمت محصول', 'مثلاً: 5000000', Icons.attach_money, isNumber: true),
+                              buildLabel('آدرس عکس محصول'),
+                              buildTextField(_imageUrlController, 'آدرس عکس', 'https://example.com/img.jpg', Icons.image),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    ElevatedButtonSelector(
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
+                      textInElevation: 'ذخیره تغییرات',
+                      onPressed: _isLoading ? () {} : _updateProduct,
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _priceController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'قیمت محصول'),
-                validator: (value) => double.tryParse(value!) == null
-                    ? 'قیمت معتبر وارد کنید'
-                    : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _imageUrlController,
-                decoration: const InputDecoration(labelText: 'آدرس عکس'),
-                validator: (value) =>
-                    value!.isEmpty ? 'آدرس عکس را وارد کنید' : null,
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isLoading ? null : _updateProduct,
-                child: _isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text('ذخیره تغییرات'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildLabel(String text) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontWeight: FontWeight.w400,
+            color: Colors.black,
+            fontSize: 16,
+            fontFamily: 'iransans',
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildTextField(TextEditingController controller, String label, String hint, IconData icon, {bool isNumber = false}) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontWeight: FontWeight.w400,
+        color: Colors.black,
+        fontSize: 16,
+        fontFamily: 'iransans',
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        hintStyle: const TextStyle(fontFamily: 'iransans', color: Colors.grey),
+        labelStyle: const TextStyle(fontWeight: FontWeight.w400, color: Colors.black54, fontSize: 16, fontFamily: 'iransans'),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        suffixIcon: Icon(icon, color: Colors.black26),
+      ),
+      textDirection: TextDirection.ltr,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'لطفاً $label را وارد کنید';
+        }
+        if (isNumber && double.tryParse(value) == null) {
+          return 'لطفاً عدد معتبر وارد کنید';
+        }
+        return null;
+      },
     );
   }
 }
