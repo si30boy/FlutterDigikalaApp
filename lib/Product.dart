@@ -1,35 +1,20 @@
 class Product {
-  String _id;
-  String _name;
-  String _price;
-  String _image;
-  String _description;
+  String id;
+  String name;
+  String price;
+  String image;
+  String description;
 
-  Product(this._id, this._name, this._price, this._image, this._description);
+  Product(this.id, this.name, this.price, this.image, this.description);
 
-  String get id => _id;
-  String get name => _name;
-  String get price => _price;
-  String get image => _image;
-  String get description => _description;
-
-  set id(String value) {
-    id = value;
-  }
-
-  set name(String value) {
-    name = value;
-  }
-
-  set price(String value) {
-    price = value;
-  }
-
-  set image(String value) {
-    image = value;
-  }
-
-  set description(String value) {
-    description = value;
+  // از JSON ساختن
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      json['id'].toString(),
+      json['name'] ?? '',
+      json['price'].toString(),
+      json['image_url'] ?? '',
+      json['description'] ?? '',
+    );
   }
 }

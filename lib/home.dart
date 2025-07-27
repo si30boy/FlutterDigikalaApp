@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Product.dart';
 import 'package:flutter_application_1/productpage.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,30 +13,27 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  int _selectedIndex = 0; // ✅ اینجا تعریفش کن
-  final List<Product> _items = [
-    Product(
-      '1',
-      'کنسول بازی ',
-      '130001234',
-      'https://s6.uupload.ir/files/consoleimage_irmt.jpg',
-      'قیمت عای و مناسب',
-    ),
-    Product(
-      '2',
-      'کنسول بازی ',
-      '130342324',
-      'https://s6.uupload.ir/files/consoleimage_irmt.jpg',
-      'قیمت عای و مناسب',
-    ),
-    Product(
-      '3',
-      'کنسول بازی ',
-      '135252555',
-      'https://s6.uupload.ir/files/consoleimage_irmt.jpg',
-      'قیمت عای و مناسب',
-    ),
-  ];
+  int _selectedIndex = 0;
+  List<Product> _items = [];
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProductsFromSupabase();
+  }
+
+  Future<void> fetchProductsFromSupabase() async {
+    final response = await Supabase.instance.client
+        .from('products')
+        .select();
+
+    final data = response as List;
+    setState(() {
+      _items = data.map((item) => Product.fromJson(item)).toList();
+      _loading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +60,9 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-        body: MainUi(),
+        body: _loading
+            ? Center(child: CircularProgressIndicator())
+            : MainUi(),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
@@ -102,142 +102,140 @@ class _HomeState extends State<Home> {
   }
 
   Widget MainUi() {
-    return Builder(
-      builder: (context) {
-        return SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          scrollDirection: Axis.vertical,
-          child: Column(
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          ImageSlideshow(
+            width: double.infinity,
+            height: 160,
+            initialPage: 0,
+            indicatorColor: Colors.white,
+            indicatorBackgroundColor: Colors.grey,
+            autoPlayInterval: 6000,
+            isLoop: true,
             children: [
-              ImageSlideshow(
-                width: double.infinity,
-                height: 160,
-                initialPage: 0,
-                indicatorColor: Colors.white,
-                indicatorBackgroundColor: Colors.grey,
-                autoPlayInterval: 6000,
-                isLoop: true,
-                children: [
-                  Image.asset('assets/images/slider2.jpg', fit: BoxFit.fill),
-                  Image.asset('assets/images/slider4.jpg', fit: BoxFit.fill),
-                  Image.asset('assets/images/slider5.jpg', fit: BoxFit.fill),
-                  Image.asset('assets/images/slider6.jpg', fit: BoxFit.fill),
-                  Image.asset('assets/images/slider7.jpg', fit: BoxFit.fill),
-                ],
-              ),
-              SizedBox(height: 12),
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  height: 60,
-                  margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(CupertinoIcons.back),
-                      Text(
-                        'پر فروشترین محصولات',
-                        style: TextStyle(
-                          fontFamily: 'iransans',
-                          fontWeight: FontWeight.w800,
-                          color: Colors.teal,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                height: 310,
-                color: Colors.green,
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: GridView.count(
-                    crossAxisCount: 1,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 15,
-                    scrollDirection: Axis.horizontal,
-                    children: List.generate(_items.length, (int position) {
-                      return generateItems(_items[position], (context));
-                    }),
-                  ),
-                ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                height: 120,
-                width: double.infinity,
-                margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  elevation: 8,
-                  child: Image.network(
-                    'https://s6.uupload.ir/files/ban_4_jxpg.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                height: 120,
-                width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      height: 120,
-                      width: MediaQuery.of(context).size.width / 2,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
-                        elevation: 8,
-                        child: Image.network(
-                          'https://s6.uupload.ir/files/ban_5_s0pa.jpg',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 120,
-                      width: MediaQuery.of(context).size.width / 2,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                        ),
-                        elevation: 8,
-                        child: Image.network(
-                          'https://s6.uupload.ir/files/ban_6_9iey.jpg',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                height: 120,
-                width: double.infinity,
-                margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                  ),
-                  elevation: 8,
-                  child: Image.network(
-                    'https://s6.uupload.ir/files/ban_7_b9gw.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
+              Image.asset('assets/images/slider2.jpg', fit: BoxFit.fill),
+              Image.asset('assets/images/slider4.jpg', fit: BoxFit.fill),
+              Image.asset('assets/images/slider5.jpg', fit: BoxFit.fill),
+              Image.asset('assets/images/slider6.jpg', fit: BoxFit.fill),
+              Image.asset('assets/images/slider7.jpg', fit: BoxFit.fill),
             ],
           ),
-        );
-      },
+          SizedBox(height: 12),
+          InkWell(
+            onTap: () {},
+            child: Container(
+              height: 60,
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(CupertinoIcons.back),
+                  Text(
+                    'پر فروشترین محصولات',
+                    style: TextStyle(
+                      fontFamily: 'iransans',
+                      fontWeight: FontWeight.w800,
+                      color: Colors.teal,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // 👇 نمایش افقی محصولات با scroll
+          Container(
+            height: 310,
+            margin: EdgeInsets.only(bottom: 16),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: List.generate(_items.length, (index) {
+                  return Container(
+                    width: 260,
+                    margin: EdgeInsets.symmetric(horizontal: 8),
+                    child: generateItems(_items[index], context),
+                  );
+                }),
+              ),
+            ),
+          ),
+
+          Container(
+            height: 120,
+            width: double.infinity,
+            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
+              elevation: 8,
+              child: Image.network(
+                'https://s6.uupload.ir/files/ban_4_jxpg.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(height: 8),
+          Container(
+            height: 120,
+            width: double.infinity,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  height: 120,
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    elevation: 8,
+                    child: Image.network(
+                      'https://s6.uupload.ir/files/ban_5_s0pa.jpg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 120,
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
+                    elevation: 8,
+                    child: Image.network(
+                      'https://s6.uupload.ir/files/ban_6_9iey.jpg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 8),
+          Container(
+            height: 120,
+            width: double.infinity,
+            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
+              elevation: 8,
+              child: Image.network(
+                'https://s6.uupload.ir/files/ban_7_b9gw.jpg',
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -256,7 +254,8 @@ Widget generateItems(Product product, BuildContext context) {
     elevation: 10,
     child: InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Productpage(product)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Productpage(product)));
       },
       child: Center(
         child: Column(
@@ -282,7 +281,6 @@ Widget generateItems(Product product, BuildContext context) {
               ),
             ),
             SizedBox(height: 4),
-
             Divider(
               height: 1,
               color: Colors.grey,
@@ -290,7 +288,6 @@ Widget generateItems(Product product, BuildContext context) {
               endIndent: 15,
               indent: 15,
             ),
-
             SizedBox(height: 8),
             Padding(
               padding: EdgeInsets.fromLTRB(30, 0, 0, 0),

@@ -13,7 +13,8 @@ class login extends StatefulWidget {
 }
 
 class _loginState extends State<login> {
-  final TextEditingController _usernameOrEmailController = TextEditingController();
+  final TextEditingController _usernameOrEmailController =
+      TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
@@ -45,6 +46,8 @@ class _loginState extends State<login> {
         email = response['email'];
       }
 
+      debugPrint('Trying login with: $email');
+
       final result = await supabase.auth.signInWithPassword(
         email: email,
         password: _passwordController.text.trim(),
@@ -54,12 +57,15 @@ class _loginState extends State<login> {
         throw Exception('ورود ناموفق بود.');
       }
 
+      debugPrint('Login successful: ${result.user!.email}');
+
+      // رفتن به صفحه خانه
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const Home()),
       );
     } catch (e) {
-      String errorMessage = 'خطا در ورود: $e';
+      String errorMessage = 'خطا در ورود: ${e.toString()}';
       if (e is AuthException) {
         if (e.message.contains('invalid')) {
           errorMessage = 'ایمیل یا رمز عبور اشتباه است.';
@@ -67,6 +73,8 @@ class _loginState extends State<login> {
           errorMessage = 'کاربری با این اطلاعات یافت نشد.';
         }
       }
+
+      debugPrint(errorMessage);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
@@ -144,8 +152,8 @@ class LoginUi extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 30),
-            Center(
+            const SizedBox(height: 30),
+            const Center(
               child: Text(
                 'فروشگاه آنلاین من',
                 style: TextStyle(
@@ -157,11 +165,11 @@ class LoginUi extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Container(
               height: screenHeight * 0.35,
               width: double.infinity,
-              margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+              margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -269,22 +277,22 @@ class LoginUi extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 48),
+            const SizedBox(height: 48),
             ElevatedButtonSelector(
               screenHeight: screenHeight,
               screenWidth: screenWidth,
               textInElevation: 'ورود',
               onPressed: isLoading ? () {} : onLogin,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             InkWell(
               onTap: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => Signup()),
+                  MaterialPageRoute(builder: (context) => const Signup()),
                 );
               },
-              child: Text(
+              child: const Text(
                 'حساب کاربری ندارم',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
@@ -300,4 +308,3 @@ class LoginUi extends StatelessWidget {
     );
   }
 }
- 
