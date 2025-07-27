@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/adminhome.dart';
 import 'package:flutter_application_1/admininsertitem.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_application_1/login.dart';
@@ -16,7 +17,7 @@ void main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlaHNteGlodXVwcm96dHpxb2ptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM0NTY2MjcsImV4cCI6MjA2OTAzMjYyN30.4M6jo33ilgtn4kyr-oYEsxhoZfU9mpgfjsv8zbgz5eE',
   );
 
-  runApp(Admininsertitem());
+  runApp(AdminHome());
 }
 
 class MyApp extends StatelessWidget {
