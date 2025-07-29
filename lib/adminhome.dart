@@ -291,7 +291,7 @@ Widget generateItems(Product product, BuildContext context, VoidCallback onDelet
             ),
             SizedBox(height: 4),
             Container(
-              width: 222,
+              width: 220,
               height: 50,
               child: Text(
                 product.name,
