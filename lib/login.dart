@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Selector.dart';
+import 'package:flutter_application_1/adminhome.dart';
+import 'package:flutter_application_1/admininsertitem.dart';
 import 'package:flutter_application_1/home.dart';
 import 'package:flutter_application_1/signup.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -294,6 +296,42 @@ class LoginUi extends StatelessWidget {
               },
               child: const Text(
                 'حساب کاربری ندارم',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: Colors.blueAccent,
+                  fontSize: 14,
+                  fontFamily: 'iransans',
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            InkWell(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Home()),
+                );
+              },
+              child: const Text(
+                'حسابم',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: Colors.blueAccent,
+                  fontSize: 14,
+                  fontFamily: 'iransans',
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            InkWell(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const Admininsertitem()),
+                );
+              },
+              child: const Text(
+                'حسابffffffم',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   color: Colors.blueAccent,

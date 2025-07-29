@@ -20,90 +20,107 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    fetchProductsFromSupabase();
+    // این فراخوانی محصولات از دیتابیس در اینجا صحیح است.
+    _fetchProductsFromSupabase();
   }
 
-  Future<void> fetchProductsFromSupabase() async {
-    final response = await Supabase.instance.client
-        .from('products')
-        .select();
+  Future<void> _fetchProductsFromSupabase() async {
+    try {
+      final response = await Supabase.instance.client.from('products').select();
+      // Supabase client returns a List<Map<String, dynamic>>
+      final data = response as List;
+      setState(() {
+        _items = data.map((item) => Product.fromJson(item as Map<String, dynamic>)).toList();
+        _loading = false;
+      });
+    } catch (e) {
+      // خطاها رو اینجا هندل کنید، مثلاً با نمایش یک Snackbar
+      print('Error fetching products: $e');
+      setState(() {
+        _loading = false;
+      });
+      // می‌تونید اینجا یک پیام خطا به کاربر نشون بدید
+      if (mounted) { // بررسی کنید که ویجت هنوز در درخت هست یا نه
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('خطا در دریافت محصولات: $e')),
+        );
+      }
+    }
+  }
 
-    final data = response as List;
+  void _onItemTap(int index) {
     setState(() {
-      _items = data.map((item) => Product.fromJson(item)).toList();
-      _loading = false;
+      _selectedIndex = index;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'فروشگاه من',
-            style: TextStyle(
-              fontFamily: 'iransans',
-              fontWeight: FontWeight.w800,
-              color: Colors.teal,
-            ),
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          elevation: 10,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: Icon(CupertinoIcons.shopping_cart),
-              color: Colors.black45,
-            ),
-          ],
-        ),
-        body: _loading
-            ? Center(child: CircularProgressIndicator())
-            : MainUi(),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          elevation: 20,
-          selectedFontSize: 15,
-          selectedIconTheme: IconThemeData(color: Colors.teal, size: 30),
-          selectedItemColor: Colors.teal,
-          selectedLabelStyle: TextStyle(
-            color: Colors.blue,
+    // **مهم**: MaterialApp از اینجا حذف شده و باید در main.dart قرار داشته باشه.
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'فروشگاه من',
+          style: TextStyle(
             fontFamily: 'iransans',
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w800,
+            color: Colors.teal,
           ),
-          unselectedIconTheme: IconThemeData(size: 30),
-          unselectedLabelStyle: TextStyle(
-            fontFamily: 'iransans',
-            fontWeight: FontWeight.w200,
-          ),
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.settings),
-              label: 'تنظیمات',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.home),
-              label: 'صفحه اصلی',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(CupertinoIcons.shopping_cart),
-              label: 'سبد خرید',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          onTap: _onItemTap,
         ),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 10,
+        actions: [
+          IconButton(
+            onPressed: () {
+              // TODO: Implement cart functionality
+            },
+            icon: const Icon(CupertinoIcons.shopping_cart),
+            color: Colors.black45,
+          ),
+        ],
+      ),
+      body: _loading ? const Center(child: CircularProgressIndicator()) : _mainUi(),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.white,
+        elevation: 20,
+        selectedFontSize: 15,
+        selectedIconTheme: const IconThemeData(color: Colors.teal, size: 30),
+        selectedItemColor: Colors.teal,
+        selectedLabelStyle: const TextStyle(
+          color: Colors.blue,
+          fontFamily: 'iransans',
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedIconTheme: const IconThemeData(size: 30),
+        unselectedLabelStyle: const TextStyle(
+          fontFamily: 'iransans',
+          fontWeight: FontWeight.w200,
+        ),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.settings),
+            label: 'تنظیمات',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.home),
+            label: 'صفحه اصلی',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.shopping_cart),
+            label: 'سبد خرید',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTap,
       ),
     );
   }
 
-  Widget MainUi() {
+  Widget _mainUi() {
     return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       child: Column(
         children: [
           ImageSlideshow(
@@ -122,13 +139,15 @@ class _HomeState extends State<Home> {
               Image.asset('assets/images/slider7.jpg', fit: BoxFit.fill),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              // TODO: Navigate to "Most Popular Products" page
+            },
             child: Container(
               height: 60,
-              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
+              margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -145,32 +164,29 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-
-          // 👇 نمایش افقی محصولات با scroll
-          Container(
+          SizedBox(
             height: 310,
-            margin: EdgeInsets.only(bottom: 16),
+           // margin: const EdgeInsets.only(bottom: 16),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Row(
                 children: List.generate(_items.length, (index) {
                   return Container(
                     width: 260,
-                    margin: EdgeInsets.symmetric(horizontal: 8),
-                    child: generateItems(_items[index], context),
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    child: _generateItems(_items[index], context),
                   );
                 }),
               ),
             ),
           ),
-
           Container(
             height: 120,
             width: double.infinity,
-            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Card(
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               elevation: 8,
@@ -180,18 +196,14 @@ class _HomeState extends State<Home> {
               ),
             ),
           ),
-          SizedBox(height: 8),
-          Container(
-            height: 120,
-            width: double.infinity,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
                   height: 120,
-                  width: MediaQuery.of(context).size.width / 2,
                   child: Card(
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
                     elevation: 8,
@@ -201,11 +213,12 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),
-                Container(
+              ),
+              Expanded(
+                child: Container(
                   height: 120,
-                  width: MediaQuery.of(context).size.width / 2,
                   child: Card(
-                    shape: RoundedRectangleBorder(
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
                     elevation: 8,
@@ -215,16 +228,16 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Container(
             height: 120,
             width: double.infinity,
-            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+            margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
             child: Card(
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
               ),
               elevation: 8,
@@ -239,85 +252,82 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void _onItemTap(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-}
-
-Widget generateItems(Product product, BuildContext context) {
-  return Card(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(Radius.circular(12)),
-    ),
-    elevation: 10,
-    child: InkWell(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => Productpage(product)));
-      },
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 190,
-              height: 170,
-              child: Image.network(product.image, fit: BoxFit.contain),
-            ),
-            SizedBox(height: 4),
-            Container(
-              width: 220,
-              height: 50,
-              child: Text(
-                product.name,
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontFamily: 'iransans',
-                  fontSize: 18,
+  Widget _generateItems(Product product, BuildContext context) {
+    return Card(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+      ),
+      elevation: 10,
+      child: InkWell(
+        onTap: () {
+          // Navigator اینجا به درستی کار می‌کند چون MyApp در main.dart شامل MaterialApp هست.
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Productpage(product: product)),
+          );
+        },
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 190,
+                height: 170,
+                child: Image.network(product.image, fit: BoxFit.contain),
+              ),
+              const SizedBox(height: 4),
+              SizedBox(
+                width: 220,
+                height: 50,
+                child: Text(
+                  product.name,
+                  textAlign: TextAlign.right,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'iransans',
+                    fontSize: 18,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 4),
-            Divider(
-              height: 1,
-              color: Colors.grey,
-              thickness: 1.4,
-              endIndent: 15,
-              indent: 15,
-            ),
-            SizedBox(height: 8),
-            Padding(
-              padding: EdgeInsets.fromLTRB(30, 0, 0, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    'تومان',
-                    style: TextStyle(
-                      fontFamily: 'iransans',
-                      fontSize: 16,
-                      color: Colors.blueGrey,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    product.price,
-                    style: TextStyle(
-                      fontFamily: 'iransans',
-                      fontSize: 16,
-                      color: Colors.blueGrey,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 4),
+              const Divider(
+                height: 1,
+                color: Colors.grey,
+                thickness: 1.4,
+                endIndent: 15,
+                indent: 15,
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'تومان',
+                      style: TextStyle(
+                        fontFamily: 'iransans',
+                        fontSize: 16,
+                        color: Colors.blueGrey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      product.price,
+                      style: const TextStyle(
+                        fontFamily: 'iransans',
+                        fontSize: 16,
+                        color: Colors.blueGrey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

@@ -277,7 +277,7 @@ Widget generateItems(Product product, BuildContext context, VoidCallback onDelet
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Productpage(product)),
+          MaterialPageRoute(builder: (context) => Productpage(product: product)),
         );
       },
       child: Center(
