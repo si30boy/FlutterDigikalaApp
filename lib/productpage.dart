@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_application_1/Product.dart'; // مطمئن شوید که Product را ایمپورت کرده‌اید
+import 'package:flutter_application_1/Product.dart';
+import 'package:flutter_application_1/home.dart'; // مطمئن شوید که Product را ایمپورت کرده‌اید
 
 class Productpage extends StatelessWidget {
   final Product product; // محصولی که از صفحه اصلی دریافت می‌شود
@@ -24,7 +25,7 @@ class Productpage extends StatelessWidget {
           centerTitle: true,
           leading: IconButton(
             icon: Icon(CupertinoIcons.back, color: Colors.black),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Home(),)),
           ),
           backgroundColor: Colors.white,
           elevation: 10,
