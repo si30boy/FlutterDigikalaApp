@@ -125,7 +125,7 @@ class _AdmininsertitemState extends State<Admininsertitem> {
               centerTitle: true,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Selector(),)),
               ),
               backgroundColor: Colors.white,
               elevation: 0,

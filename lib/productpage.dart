@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_application_1/Basketinfo.dart';
 import 'package:flutter_application_1/Product.dart';
 import 'package:flutter_application_1/home.dart'; // مطمئن شوید که Product را ایمپورت کرده‌اید
 
@@ -143,10 +144,23 @@ class Productpage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
             child: InkWell(
               onTap: () {
+
+
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('محصول به سبد خرید اضافه شد')),
                 );
-                // TODO: Implement add to cart functionality
+
+
+                print('size before click ' + BasketInfo.getTemplate().basketItems.length.toString());
+
+
+                
+                BasketInfo.getTemplate().basketItems.add(product);
+                
+                print('size after click ' + BasketInfo.getTemplate().basketItems.length.toString());
+
+               
               },
               child: Container(
                 decoration: BoxDecoration(

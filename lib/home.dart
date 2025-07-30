@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Product.dart';
+import 'package:flutter_application_1/ShoppingBasket.dart';
 import 'package:flutter_application_1/productpage.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -73,7 +74,7 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
             onPressed: () {
-              // TODO: Implement cart functionality
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Shoppingbasket(),));
             },
             icon: const Icon(CupertinoIcons.shopping_cart),
             color: Colors.black45,
