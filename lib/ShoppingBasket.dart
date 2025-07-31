@@ -82,7 +82,8 @@ class _ShoppingbasketState extends State<Shoppingbasket> {
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'iransans',
-                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
                     ),
                   ),
                 ),

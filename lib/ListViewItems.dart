@@ -43,7 +43,7 @@ class _ListViewItemsState extends State<ListViewItems> {
                   widget._product.image,
                   width: 100,
                   height: 100,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
@@ -64,6 +64,8 @@ class _ListViewItemsState extends State<ListViewItems> {
                         fontSize: 16,
                       ),
                       textAlign: TextAlign.end,
+                      maxLines: 2, // فقط ۲ خط نمایش بده
+                      overflow: TextOverflow.clip, // اگر بیشتر بود با ... نشون
                     ),
                   ),
                 ),
@@ -76,11 +78,11 @@ class _ListViewItemsState extends State<ListViewItems> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        SizedBox(width: 2),
                         InkWell(
                           onTap: () => widget._RemoveItem(widget._index),
 
-
-                          child: Icon(CupertinoIcons.delete),
+                          child: Icon(CupertinoIcons.delete, color: Colors.red),
                         ),
                         Row(
                           children: [
@@ -92,6 +94,7 @@ class _ListViewItemsState extends State<ListViewItems> {
                                 fontSize: 14,
                               ),
                             ),
+                            SizedBox(width: 2),
                             Text(
                               widget._product.price,
                               style: TextStyle(
