@@ -52,7 +52,7 @@ class _ListViewItemsState extends State<ListViewItems> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
                   child: Container(
                     height: 60,
                     width: 180,
