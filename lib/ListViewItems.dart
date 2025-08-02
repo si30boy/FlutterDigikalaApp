@@ -71,7 +71,7 @@ class _ListViewItemsState extends State<ListViewItems> {
                 ),
 
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  padding: EdgeInsets.fromLTRB(0, 28, 0, 0),
                   child: Container(
                     height: 20,
                     width: 180,
