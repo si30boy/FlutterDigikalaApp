@@ -42,6 +42,8 @@ dependencies:
   flutter_image_slideshow: ^0.1.6
   supabase_flutter: ^2.9.1
   password_strength_checker: ^1.2.4
+  persistent_bottom_nav_bar: ^6.2.1
+  persistent_bottom_nav_bar_v2: ^6.1.0
   
   
 
