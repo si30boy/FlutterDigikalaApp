@@ -41,6 +41,7 @@ dependencies:
   lottie: ^3.3.0
   flutter_image_slideshow: ^0.1.6
   supabase_flutter: ^2.9.1
+  password_strength_checker: ^1.2.4
   
   
 

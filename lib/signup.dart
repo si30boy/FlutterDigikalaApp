@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Selector.dart';
 import 'package:flutter_application_1/login.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:password_strength_checker/password_strength_checker.dart';
 
 class Signup extends StatefulWidget {
   const Signup({Key? key}) : super(key: key);
@@ -17,6 +18,9 @@ class _SignupPageState extends State<Signup> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  final ValueNotifier<PasswordStrength?> _passNotifier = ValueNotifier(null);
+  PasswordStrength? get _currentStrength => _passNotifier.value;
+
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
@@ -28,7 +32,6 @@ class _SignupPageState extends State<Signup> {
     });
 
     try {
-      // ثبت‌نام کاربر با ایمیل در Supabase
       final response = await Supabase.instance.client.auth.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
@@ -38,7 +41,6 @@ class _SignupPageState extends State<Signup> {
         throw Exception('ثبت‌نام ناموفق بود.');
       }
 
-      // ذخیره اطلاعات اضافی در جدول users
       await Supabase.instance.client.from('users').insert({
         'username': _usernameController.text.trim(),
         'email': _emailController.text.trim(),
@@ -101,6 +103,7 @@ class _SignupPageState extends State<Signup> {
     _emailController.clear();
     _passwordController.clear();
     _confirmPasswordController.clear();
+    _passNotifier.value = null;
   }
 
   @override
@@ -109,7 +112,45 @@ class _SignupPageState extends State<Signup> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _passNotifier.dispose();
     super.dispose();
+  }
+
+  String _strengthLabel(PasswordStrength? strength) {
+    if (strength == null) return '';
+    switch (strength) {
+      case PasswordStrength.alreadyExposed:
+        return 'در افشا شده';
+      case PasswordStrength.weak:
+        return 'ضعیف';
+      case PasswordStrength.medium:
+        return 'متوسط';
+      case PasswordStrength.strong:
+        return 'قوی';
+      case PasswordStrength.secure:
+        return 'امن';
+    }
+  }
+
+  Color _strengthColor(PasswordStrength? strength) {
+    if (strength == null) return Colors.grey;
+    switch (strength) {
+      case PasswordStrength.alreadyExposed:
+        return Colors.purple;
+      case PasswordStrength.weak:
+        return Colors.red;
+      case PasswordStrength.medium:
+        return Colors.orange;
+      case PasswordStrength.strong:
+      case PasswordStrength.secure:
+        return Colors.green;
+    }
+  }
+
+  bool get _isPasswordAcceptable {
+    if (_currentStrength == null) return false;
+    // حداقل سطح قابل قبول: strong
+    return _currentStrength!.index >= PasswordStrength.strong.index;
   }
 
   @override
@@ -128,7 +169,10 @@ class _SignupPageState extends State<Signup> {
           centerTitle: true,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Selector(),)),
+            onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => Selector()),
+            ),
           ),
           backgroundColor: Colors.white,
           elevation: 0,
@@ -139,19 +183,6 @@ class _SignupPageState extends State<Signup> {
             key: _formKey,
             child: Column(
               children: [
-                // const SizedBox(height: 20),
-                // const Center(
-                //   child: Text(
-                //     'فروشگاه آنلاین من',
-                //     style: TextStyle(
-                //       fontFamily: 'iransans',
-                //       fontWeight: FontWeight.w800,
-                //       fontSize: 22,
-                //       letterSpacing: 0.5,
-                //       color: Colors.blueAccent,
-                //     ),
-                //   ),
-                // ),
                 const SizedBox(height: 28),
                 Container(
                   height: screenHeight * 0.64,
@@ -256,8 +287,7 @@ class _SignupPageState extends State<Signup> {
                               if (value == null || value.isEmpty) {
                                 return 'لطفاً ایمیل وارد کنید';
                               }
-                              if (!value.contains('@') ||
-                                  !value.contains('.')) {
+                              if (!value.contains('@') || !value.contains('.')) {
                                 return 'لطفاً ایمیل معتبر وارد کنید';
                               }
                               return null;
@@ -277,40 +307,77 @@ class _SignupPageState extends State<Signup> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          TextFormField(
-                            controller: _passwordController,
-                            obscureText: true,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w400,
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontFamily: 'iransans',
-                            ),
-                            decoration: InputDecoration(
-                              labelText: 'رمز عبور',
-                              labelStyle: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black54,
-                                fontSize: 16,
-                                fontFamily: 'iransans',
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              suffixIcon: const Icon(
-                                Icons.lock,
-                                color: Colors.black26,
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'لطفاً رمز عبور وارد کنید';
-                              }
-                              if (value.length < 6) {
-                                return 'رمز عبور باید حداقل 6 کاراکتر باشد';
-                              }
-                              return null;
+                          ValueListenableBuilder<PasswordStrength?>(
+                            valueListenable: _passNotifier,
+                            builder: (context, strength, _) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  TextFormField(
+                                    controller: _passwordController,
+                                    obscureText: true,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontFamily: 'iransans',
+                                    ),
+                                    decoration: InputDecoration(
+                                      labelText: 'رمز عبور',
+                                      labelStyle: const TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.black54,
+                                        fontSize: 16,
+                                        fontFamily: 'iransans',
+                                      ),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      suffixIcon: const Icon(
+                                        Icons.lock,
+                                        color: Colors.black26,
+                                      ),
+                                    ),
+                                    onChanged: (value) {
+                                      _passNotifier.value =
+                                          PasswordStrength.calculate(text: value);
+                                      setState(() {});
+                                    },
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'لطفاً رمز عبور وارد کنید';
+                                      }
+                                      if (value.length < 6) {
+                                        return 'رمز عبور باید حداقل 6 کاراکتر باشد';
+                                      }
+                                      if (!_isPasswordAcceptable) {
+                                        return 'رمز عبور ضعیف است';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: PasswordStrengthChecker(
+                                          strength: _passNotifier,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      if (strength != null)
+                                        Text(
+                                          _strengthLabel(strength),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: _strengthColor(strength),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ],
+                              );
                             },
                           ),
                           const SizedBox(height: 16),
