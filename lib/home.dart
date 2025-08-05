@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:flutter_application_1/Product.dart';
 import 'package:flutter_application_1/ShoppingBasket.dart';
@@ -26,6 +27,26 @@ class _HomeState extends State<Home> {
     super.initState();
     _controller = PersistentTabController(initialIndex: 1);
     _fetchProductsFromSupabase();
+
+    _homeScrollController.addListener(() {
+      if (_homeScrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        if (!_hideNavBar) {
+          setState(() => _hideNavBar = true);
+        }
+      } else if (_homeScrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        if (_hideNavBar) {
+          setState(() => _hideNavBar = false);
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _homeScrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchProductsFromSupabase() async {
@@ -103,7 +124,7 @@ class _HomeState extends State<Home> {
           ? const Center(child: CircularProgressIndicator())
           : _mainUi(),
     ),
-    // سبد خرید
+    // سبد خرید (بدون badge / ساده)
     Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -343,7 +364,7 @@ class _HomeState extends State<Home> {
               ),
               const SizedBox(height: 8),
               Padding(
-                padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+                padding: const EdgeInsets.fromLTRB(28, 0, 0, 0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -388,6 +409,10 @@ class _HomeState extends State<Home> {
       resizeToAvoidBottomInset: false,
       stateManagement: true,
       hideNavigationBarWhenKeyboardAppears: true,
+      hideOnScrollSettings: HideOnScrollSettings(
+        hideNavBarOnScroll: true,
+        scrollControllers: [_homeScrollController],
+      ),
       navBarStyle: NavBarStyle.style10,
       navBarHeight: kBottomNavigationBarHeight + 8,
       padding: const EdgeInsets.only(top: 6),
@@ -410,23 +435,12 @@ class _HomeState extends State<Home> {
         screenTransitionAnimation: ScreenTransitionAnimationSettings(
           animateTabTransition: true,
           duration: Duration(milliseconds: 280),
-          screenTransitionAnimationType: ScreenTransitionAnimationType.fadeIn,
+          screenTransitionAnimationType: ScreenTransitionAnimationType.slide,
         ),
         onNavBarHideAnimation: OnHideAnimationSettings(
           duration: Duration(milliseconds: 180),
-          curve: Curves.easeInOut,
+          curve: Curves.elasticOut,
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.teal,
-        elevation: 8,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
-        ),
-        child: const Icon(Icons.add, size: 28, color: Colors.white),
-        onPressed: () {
-          // اکشن دکمه شناور
-        },
       ),
       popBehaviorOnSelectedNavBarItemPress: PopBehavior.all,
       isVisible: !_hideNavBar,
