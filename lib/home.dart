@@ -321,7 +321,7 @@ class _HomeState extends State<Home> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
-      elevation: 8,
+      elevation: 10,
       child: InkWell(
         onTap: () {
           Navigator.push(
