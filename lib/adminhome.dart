@@ -37,9 +37,9 @@ class _AdminHomeState extends State<AdminHome> {
       setState(() {
         _loading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('خطا در دریافت محصولات: $error')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('خطا در دریافت محصولات: $error')));
     }
   }
 
@@ -47,13 +47,13 @@ class _AdminHomeState extends State<AdminHome> {
     try {
       await Supabase.instance.client.from('products').delete().eq('id', id);
       await fetchProductsFromSupabase(); // Refresh the list after deletion
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('محصول با موفقیت حذف شد')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('محصول با موفقیت حذف شد')));
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('خطا در حذف محصول: $error')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('خطا در حذف محصول: $error')));
     }
   }
 
@@ -96,9 +96,7 @@ class _AdminHomeState extends State<AdminHome> {
             ),
           ],
         ),
-        body: _loading
-            ? Center(child: CircularProgressIndicator())
-            : MainUi(),
+        body: _loading ? Center(child: CircularProgressIndicator()) : MainUi(),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.white,
@@ -167,7 +165,7 @@ class _AdminHomeState extends State<AdminHome> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                
+
                 children: [
                   Icon(CupertinoIcons.back),
                   Text(
@@ -278,7 +276,11 @@ class _AdminHomeState extends State<AdminHome> {
   }
 }
 
-Widget generateItems(Product product, BuildContext context, VoidCallback onDelete) {
+Widget generateItems(
+  Product product,
+  BuildContext context,
+  VoidCallback onDelete,
+) {
   return Card(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -288,7 +290,9 @@ Widget generateItems(Product product, BuildContext context, VoidCallback onDelet
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Productpageadmin(product: product)),
+          MaterialPageRoute(
+            builder: (context) => Productpageadmin(product: product),
+          ),
         );
       },
       child: Center(
@@ -351,10 +355,10 @@ Widget generateItems(Product product, BuildContext context, VoidCallback onDelet
                       ),
                     ],
                   ),
-                  IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: onDelete,
-                  ),
+                  // IconButton(
+                  //   icon: Icon(Icons.delete, color: Colors.red),
+                  //   onPressed: onDelete,
+                  // ),
                 ],
               ),
             ),
