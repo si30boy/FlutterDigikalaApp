@@ -113,7 +113,7 @@ class _ProductpageState extends State<Productpageadmin> {
       // بازگشت به صفحه قبلی (Home)
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Home()),
+        MaterialPageRoute(builder: (context) => const AdminHome()),
       );
     } catch (e) {
       if (!context.mounted) return;
@@ -160,7 +160,7 @@ class _ProductpageState extends State<Productpageadmin> {
             icon: Icon(CupertinoIcons.back, color: Colors.black),
             onPressed: () => Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => Home()),
+              MaterialPageRoute(builder: (context) => AdminHome()),
             ),
           ),
           actions: [
