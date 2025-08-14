@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Product.dart';
 import 'package:flutter_application_1/productpage.dart';
+import 'package:flutter_application_1/productpageadmin.dart';
+import 'package:flutter_application_1/admininsertitem.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -78,6 +80,14 @@ class _AdminHomeState extends State<AdminHome> {
           centerTitle: true,
           backgroundColor: Colors.white,
           elevation: 10,
+          leading: IconButton(
+            icon: Icon(Icons.add, color: Colors.black),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Admininsertitem()),
+            ),
+            tooltip: 'افزودن محصول جدید',
+          ),
           actions: [
             IconButton(
               onPressed: () {},
@@ -157,6 +167,7 @@ class _AdminHomeState extends State<AdminHome> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
+                
                 children: [
                   Icon(CupertinoIcons.back),
                   Text(
@@ -277,7 +288,7 @@ Widget generateItems(Product product, BuildContext context, VoidCallback onDelet
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Productpage(product: product)),
+          MaterialPageRoute(builder: (context) => Productpageadmin(product: product)),
         );
       },
       child: Center(

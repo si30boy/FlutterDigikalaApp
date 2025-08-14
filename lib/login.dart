@@ -330,7 +330,7 @@ class LoginUi extends StatelessWidget {
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const Admininsertitem()),
+                  MaterialPageRoute(builder: (context) => const AdminHome()),
                 );
               },
               child: const Text(
