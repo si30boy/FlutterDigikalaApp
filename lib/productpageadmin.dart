@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_application_1/Basketinfo.dart';
 import 'package:flutter_application_1/Product.dart';
+import 'package:flutter_application_1/adminhome.dart';
 import 'package:flutter_application_1/home.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -58,7 +59,7 @@ class _ProductpageState extends State<Productpageadmin> {
       // بازگشت به صفحه قبلی (Home)
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Home()),
+        MaterialPageRoute(builder: (context) => const AdminHome()),
       );
     } catch (e) {
       if (!context.mounted) return;

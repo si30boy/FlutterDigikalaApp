@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Selector.dart';
+import 'package:flutter_application_1/adminhome.dart';
 import 'package:flutter_application_1/home.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -90,7 +91,7 @@ class _AdmininsertitemState extends State<Admininsertitem> {
               Navigator.pop(context);
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const Home()),
+                MaterialPageRoute(builder: (context) => const AdminHome()),
               );
             },
             child: const Text(
