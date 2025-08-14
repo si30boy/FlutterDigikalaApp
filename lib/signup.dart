@@ -46,6 +46,7 @@ class _SignupPageState extends State<Signup> {
         'email': _emailController.text.trim(),
       });
 
+      if (!mounted) return;
       _showSuccessDialog();
       _clearForm();
     } catch (e) {
@@ -57,13 +58,18 @@ class _SignupPageState extends State<Signup> {
           errorMessage = 'ایمیل یا رمز عبور نامعتبر است.';
         }
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
-      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+        );
+      }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -149,7 +155,6 @@ class _SignupPageState extends State<Signup> {
 
   bool get _isPasswordAcceptable {
     if (_currentStrength == null) return false;
-    // حداقل سطح قابل قبول: strong
     return _currentStrength!.index >= PasswordStrength.strong.index;
   }
 
@@ -287,7 +292,8 @@ class _SignupPageState extends State<Signup> {
                               if (value == null || value.isEmpty) {
                                 return 'لطفاً ایمیل وارد کنید';
                               }
-                              if (!value.contains('@') || !value.contains('.')) {
+                              if (!value.contains('@') ||
+                                  !value.contains('.')) {
                                 return 'لطفاً ایمیل معتبر وارد کنید';
                               }
                               return null;
@@ -339,42 +345,42 @@ class _SignupPageState extends State<Signup> {
                                         color: Colors.black26,
                                       ),
                                     ),
-                                    onChanged: (value) {
-                                      _passNotifier.value =
-                                          PasswordStrength.calculate(text: value);
-                                      setState(() {});
-                                    },
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'لطفاً رمز عبور وارد کنید';
                                       }
-                                      if (value.length < 6) {
-                                        return 'رمز عبور باید حداقل 6 کاراکتر باشد';
-                                      }
-                                      if (!_isPasswordAcceptable) {
-                                        return 'رمز عبور ضعیف است';
+                                      if (_currentStrength == null ||
+                                          !_isPasswordAcceptable) {
+                                        return 'رمز عبور قوی انتخاب کنید';
                                       }
                                       return null;
                                     },
+                                    onChanged: (value) {
+                                      _passNotifier.value =
+                                          PasswordStrength.calculate(
+                                            text: value,
+                                          );
+                                      setState(() {});
+                                    },
                                   ),
                                   const SizedBox(height: 8),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: PasswordStrengthChecker(
-                                          strength: _passNotifier,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      if (strength != null)
-                                        Text(
-                                          _strengthLabel(strength),
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: _strengthColor(strength),
-                                          ),
-                                        ),
-                                    ],
+                                  LinearProgressIndicator(
+                                    value: strength != null
+                                        ? (strength.index + 1) / 5
+                                        : 0,
+                                    color: _strengthColor(strength),
+                                    backgroundColor: Colors.grey[300],
+                                    minHeight: 5,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _strengthLabel(strength),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: _strengthColor(strength),
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'iransans',
+                                    ),
                                   ),
                                 ],
                               );
@@ -384,7 +390,7 @@ class _SignupPageState extends State<Signup> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: const Text(
-                              'تأیید رمز عبور',
+                              'تکرار رمز عبور',
                               style: TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
@@ -405,7 +411,7 @@ class _SignupPageState extends State<Signup> {
                               fontFamily: 'iransans',
                             ),
                             decoration: InputDecoration(
-                              labelText: 'تأیید رمز عبور',
+                              labelText: 'تکرار رمز عبور',
                               labelStyle: const TextStyle(
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black54,
@@ -416,56 +422,42 @@ class _SignupPageState extends State<Signup> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               suffixIcon: const Icon(
-                                Icons.lock_outline,
+                                Icons.lock,
                                 color: Colors.black26,
                               ),
                             ),
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'لطفاً رمز عبور را تأیید کنید';
-                              }
                               if (value != _passwordController.text) {
-                                return 'رمزهای عبور مطابقت ندارند';
+                                return 'رمز عبور مطابقت ندارد';
                               }
                               return null;
                             },
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: _isLoading
+                                ? null
+                                : () => _registerUser(),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              minimumSize: Size(screenWidth * 0.8, 50),
+                            ),
+                            child: _isLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : const Text(
+                                    'ثبت نام',
+                                    style: TextStyle(
+                                      fontFamily: 'iransans',
+                                      fontSize: 18,
+                                    ),
+                                  ),
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 30),
-                ElevatedButtonSelector(
-                  screenHeight: screenHeight,
-                  screenWidth: screenWidth,
-                  textInElevation: 'ثبت‌نام',
-                  onPressed: _isLoading ? () {} : _registerUser,
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => login()),
-                        );
-                      },
-                      child: const Text(
-                        'ورود',
-                        style: TextStyle(
-                          fontFamily: 'iransans',
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                    ),
-                    const Text(
-                      'حساب کاربری دارم؟',
-                      style: TextStyle(fontFamily: 'iransans'),
-                    ),
-                  ],
                 ),
               ],
             ),
