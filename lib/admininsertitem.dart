@@ -20,46 +20,59 @@ class _AdmininsertitemState extends State<Admininsertitem> {
   final _formKey = GlobalKey<FormState>();
 
   Future<void> _submitProduct() async {
-  if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
 
-  setState(() {
-    _isLoading = true;
-  });
-
-  try {
-    final name = _nameController.text.trim();
-    final description = _descriptionController.text.trim();
-    final price = double.tryParse(_priceController.text.trim()) ?? 0;
-    final imageUrl = _imageUrlController.text.trim();
-
-    await Supabase.instance.client.from('products').insert({
-      'name': name,
-      'description': description,
-      'price': price,
-      'image_url': imageUrl,
+    setState(() {
+      _isLoading = true;
     });
 
-    if (!mounted) return;
+    try {
+      final name = _nameController.text.trim().replaceAll("'", "''"); // فرار کردن تک‌کوتیشن
+      final description = _descriptionController.text.trim().replaceAll("'", "''");
+      final price = double.tryParse(_priceController.text.trim()) ?? 0;
+      final imageUrl = _imageUrlController.text.trim().replaceAll("'", "''");
 
-    // رفتن به صفحه Home پس از ثبت موفق
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const Home()),
-    );
-  } catch (e) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('خطای اتصال: $e'), backgroundColor: Colors.red),
-    );
-  } finally {
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
+      final sql = """
+      INSERT INTO products (name, description, price, image_url)
+      VALUES ('$name', '$description', $price, '$imageUrl')
+      RETURNING *;
+      """;
+
+      print('Executing SQL: $sql'); // دیباگ کوئری
+
+      final response = await Supabase.instance.client.rpc(
+        'executesql',
+        params: {'query': sql},
+      );
+
+      print('Supabase response: $response'); // دیباگ پاسخ
+
+      if (!mounted) return;
+
+      _showSuccessDialog();
+      _clearForm();
+    } catch (e) {
+      if (!mounted) return;
+      print('Error details: $e'); // دیباگ خطا
+      String errorMessage = 'خطای اتصال: $e';
+      if (e is PostgrestException) {
+        if (e.message.contains('permission')) {
+          errorMessage = 'عدم دسترسی به دیتابیس.';
+        } else if (e.message.contains('syntax')) {
+          errorMessage = 'خطای سینتکس در کوئری SQL.';
+        }
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
-}
-
 
   void _showSuccessDialog() {
     if (!mounted) return;
