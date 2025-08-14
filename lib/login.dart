@@ -35,17 +35,20 @@ class _loginState extends State<login> {
 
       // اگر ورودی ایمیل نبود، فرض بر username بودن است
       if (!input.contains('@')) {
-        final response = await supabase
-            .from('users')
-            .select('email')
-            .eq('username', input)
-            .maybeSingle();
+        final sql = """
+        SELECT email FROM users WHERE username = '${input}' LIMIT 1;
+        """;
+
+        final response = await supabase.rpc(
+          'executesql',
+          params: {'query': sql},
+        );
 
         if (response == null || response.isEmpty) {
           throw Exception('نام کاربری وجود ندارد.');
         }
 
-        email = response['email'];
+        email = response[0]['email'];
       }
 
       debugPrint('Trying login with: $email');
