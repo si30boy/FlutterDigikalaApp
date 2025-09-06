@@ -28,7 +28,7 @@ class _AdmininsertitemState extends State<Admininsertitem> {
     });
 
     try {
-      final name = _nameController.text.trim().replaceAll("'", "''"); // فرار کردن تک‌کوتیشن
+      final name = _nameController.text.trim().replaceAll("'", "''"); 
       final description = _descriptionController.text.trim().replaceAll("'", "''");
       final price = double.tryParse(_priceController.text.trim()) ?? 0;
       final imageUrl = _imageUrlController.text.trim().replaceAll("'", "''");

@@ -33,7 +33,7 @@ class _loginState extends State<login> {
       String input = _usernameOrEmailController.text.trim();
       String email = input;
 
-      // اگر ورودی ایمیل نبود، فرض بر username بودن است
+   
       if (!input.contains('@')) {
         final sql = """
         SELECT email FROM users WHERE username = '${input}' LIMIT 1;
@@ -334,7 +334,7 @@ class LoginUi extends StatelessWidget {
                 );
               },
               child: const Text(
-                'حسابffffffم',
+                'حساب ادمین',
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   color: Colors.blueAccent,
