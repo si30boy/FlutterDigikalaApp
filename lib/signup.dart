@@ -156,7 +156,7 @@ class _SignupPageState extends State<Signup> {
                 Container(
                   height: screenHeight * 0.64,
                   width: double.infinity,
-                  margin: const EdgeInsets.fromLTRB(28, 0, 30, 0),
+                  margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
