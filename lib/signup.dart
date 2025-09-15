@@ -375,7 +375,7 @@ class _SignupPageState extends State<Signup> {
                   textInElevation: 'ثبت‌نام',
                   onPressed: _isLoading ? () {} : _registerUser,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
