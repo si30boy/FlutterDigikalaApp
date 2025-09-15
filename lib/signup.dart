@@ -368,7 +368,7 @@ class _SignupPageState extends State<Signup> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 28),
                 ElevatedButtonSelector(
                   screenHeight: screenHeight,
                   screenWidth: screenWidth,
