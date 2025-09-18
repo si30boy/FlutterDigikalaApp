@@ -417,7 +417,7 @@ class _HomeState extends State<Home> {
       navBarHeight: kBottomNavigationBarHeight + 8,
       padding: const EdgeInsets.only(top: 6),
       decoration: NavBarDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         colorBehindNavBar: Colors.white,
         boxShadow: [
           BoxShadow(
